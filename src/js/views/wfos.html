@@ -1,0 +1,98 @@
+<!--
+ Copyright (c) 2014, 2021, Oracle and/or its affiliates.
+ Licensed under The Universal Permissive License (UPL), Version 1.0
+ as shown at https://oss.oracle.com/licenses/upl/
+ -->
+<STYLE TYPE="text/css">
+<!--
+  /*@import url(css/oj-redwood-min.css);*/
+-->
+.oj-pagingcontrol-content {
+    text-align: center;
+}
+</STYLE>
+<div id="form-container" class="oj-web-applayout-max-width oj-web-applayout-content">
+  <div class="oj-flex">
+    <div class="oj-xl-2 oj-lg-2 oj-md-3 oj-sm-12 oj-flex-item oj-flex">
+      <div id="navigationContent" role="navigation" class="oj-panel oj-margin oj-flex-item">
+            <!-- Ticket List -->
+            <div id='listviewWrapper' class="list-view-container">
+                <!--oj-paging-control id="paging" data="[[backTestListDataSource]]" page-size="4">
+                </oj-paging-control-->
+                <div slot="header" style="text-align:right">
+                    <oj-button 
+                        id="newButton"
+                        chroming="solid"
+                        on-oj-action="[[newWFO]]" 
+                        data-oj-clickthrough="disabled">
+                        New
+                    </oj-button>
+                </div>
+                <oj-paging-control slot="header"
+                    id="paging" data="[[WFOListDataSource]]" 
+                    page-options='[[pagingLayout]]' page-size="12">
+                </oj-paging-control>
+                <oj-list-view id='listview'
+                aria-label="listview with paging control"                                               
+                data='[[WFOListDataSource]]'
+                selection-mode='single' selection="{{selectedWFO}}"
+                on-selection-changed="[[WFOListSelectionChanged]]"
+                selection-required='true'
+                scroll-position="{{scrollPos}}" on-scroll-position-changed="[[handleScrollPositionChanged]]"
+                scroll-policy="loadMoreOnScroll" scroll-policy-options.fetch-size="100"
+                item.renderer="[[oj.KnockoutTemplateUtils.getRenderer('ticket-list-template', true)]]">
+                </oj-list-view>
+                <script type="text/html" id="ticket-list-template">
+                    <li data-bind="attr: {id: $data['id']}">                      
+                      <div class="oj-flex oj-sm-padding-2x-top oj-sm-padding-2x-bottom">
+                        <oj-bind-text value="[[name]]"></oj-bind-text>                        
+                      </div>
+                    </li>
+                </script>
+            </div>
+                                  
+      </div>
+    </div>
+    <div class="oj-xl-10 oj-lg-10  oj-md-9 oj-sm-12 oj-flex-item oj-flex">
+      <div id="mainContent" role="main" class="oj-panel oj-margin oj-flex-item">
+          
+        <!-- Tab Bar -->
+        <div class="oj-flex oj-sm-padding-2x-top tabbar-container">
+          <oj-conveyor-belt class="oj-sm-12">
+            <oj-tab-bar 
+              contextmenu="tabmenu" 
+              id="ticket-tab-bar" 
+              selection="{{selectedTabItem}}"
+              on-selection-changed="[[tabSelectionChanged]]"
+              edge="top" 
+              data="[[tabBarDataSource]]" 
+              item.renderer="[[oj.KnockoutTemplateUtils.getRenderer('tab-template', true)]]" 
+              on-oj-remove="[[onTabRemove]]" 
+              class="oj-sm-12 oj-sm-condense">
+              <oj-menu slot="contextMenu" style="display:none" aria-label="Actions">
+                <oj-option data-oj-command="oj-tabbar-remove">
+                  Removable
+                </oj-option>
+              </oj-menu>
+            </oj-tab-bar>
+          </oj-conveyor-belt>
+        </div>
+        <script type="text/html" id="tab-template">
+          <li class="oj-removable" data-bind="css:{'oj-disabled' : $data['disabled']=='true'}">
+                <a href="#">
+                    <oj-bind-text value='[[wfo]]'></oj-bind-text>
+                </a>
+          </li>
+        </script>
+        <!-- Tab Bar-->
+        
+        <div class="oj-panel oj-flex-item" id="wfo">
+            <div data-bind="ojModule: { name: 'wfo', params: {WFOModel: selectedWFOModel, WFOList: WFOList, selectedWFO: selectedWFO} }"
+            class="oj-sm-padding-4x">
+            </div>
+        </div>
+          
+      </div>
+    </div>
+  </div>
+</div>
