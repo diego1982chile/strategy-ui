@@ -34,9 +34,20 @@ and open the template in the editor.
         <oj-bind-if test="[[wfoModel() && wfoModel().status === 'CREATED']]">             
             <oj-avatar
                 role="img" slot="leading"                
-                initials="Cr"
+                initials="Crt"
                 size="xs"
-                background="lilac">                                
+                background="green">                                
+            </oj-avatar>
+        </oj-bind-if> 
+        <oj-bind-if test="[[wfoModel() && wfoModel().status === 'PROCESSING']]">             
+            <oj-progress id="progressCircle" type="circle" value="-1"></oj-progress>
+        </oj-bind-if>             
+        <oj-bind-if test="[[wfoModel() && wfoModel().status === 'ABORTED']]">             
+            <oj-avatar
+                role="img" slot="leading"                
+                initials="Abr"
+                size="xs"
+                background="orange">                                
             </oj-avatar>
         </oj-bind-if> 
     </div>
@@ -194,6 +205,10 @@ and open the template in the editor.
     
     <oj-button id="processButton" chroming="callToAction" on-oj-action="[[processWFO]]">
         Process
+    </oj-button>
+    
+    <oj-button id="abortButton" chroming="callToAction" on-oj-action="[[abortWFO]]" class="delete-button">
+        Abort
     </oj-button>
 </div>
 

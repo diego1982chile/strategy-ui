@@ -153,6 +153,8 @@ function (oj, ko, responsiveUtils, responsiveKnockoutUtils, ArrayDataProvider, C
 
                 self.valueIn(wfo.inSample * 10);
                 self.valueOut(wfo.outSample * 10);                
+                
+                $("#abortButton").hide();
                   
                 if(wfo.status !== "NEW") {                    
                     $("#deleteButton").show();
@@ -169,6 +171,19 @@ function (oj, ko, responsiveUtils, responsiveKnockoutUtils, ArrayDataProvider, C
                 if (wfo.status === "NEW") {
                     $("#processButton").hide();
                     $("#saveButton").show();
+                }
+                
+                if (wfo.status === "PROCESSING") {
+                    $("#processButton").hide();
+                    $("#deleteButton").hide();
+                    $("#saveButton").hide();
+                    $("#abortButton").show();
+                }
+                
+                if (wfo.status === "ABORTED") {
+                    $("#processButton").show();
+                    $("#saveButton").hide();
+                    $("#deleteButton").hide();
                 }
               
             });
@@ -198,7 +213,7 @@ function (oj, ko, responsiveUtils, responsiveKnockoutUtils, ArrayDataProvider, C
                 data: JSON.stringify(wfo),			  		 
                 //crossDomain: true,
                 contentType : "application/json",                    
-                success: function(newWFO) {                                            
+                success: function(newWFO) {                     
                     self.messages([{severity: 'info', summary: 'Succesful Action', detail: "WFO saved successfuly", autoTimeout: 5000}]);
                     self.refreshWFOList(newWFO);                        
                 },
@@ -221,9 +236,10 @@ function (oj, ko, responsiveUtils, responsiveKnockoutUtils, ArrayDataProvider, C
                 data: JSON.stringify(self.wfoModel()),			  		 
                 //crossDomain: true,
                 contentType : "application/json",                    
-                success: function(response) {                                            
+                success: function(newWFO) {                                            
                     self.messages([{severity: 'info', summary: 'Succesful Action', detail: "Process request sent successfuly", autoTimeout: 5000}]);                                         
                     self.wfoModel.status = 'PROCESSING';
+                    self.refreshWFOList(newWFO);
                 },
                 error: function (request, status, error) {
                     //alert(JSON.stringify(request));                          
@@ -231,13 +247,35 @@ function (oj, ko, responsiveUtils, responsiveKnockoutUtils, ArrayDataProvider, C
                     self.messages([{severity: 'error', summary: 'Service Error', detail: request.responseText, autoTimeout: 5000}]);
                 }                                  
             });            
-
                         
         }
         
-        self.removeWFO = function (event, data) {             
+        self.abortWFO = function (event, data) {                            
+
+            $.ajax({                    
+                type: "POST",
+                url: self.baseUrl + "wfos/abort",                                        
+                dataType: "json",      
+                data: JSON.stringify(self.wfoModel()),			  		 
+                //crossDomain: true,
+                contentType : "application/json",                    
+                success: function(newWFO) {                                            
+                    self.messages([{severity: 'info', summary: 'Succesful Action', detail: "Process request sent successfuly", autoTimeout: 5000}]);                                         
+                    self.wfoModel.status = 'ABORTED';
+                    self.refreshWFOList(newWFO);
+                },
+                error: function (request, status, error) {
+                    //alert(JSON.stringify(request));                          
+                    //alert(request.responseText);     
+                    self.messages([{severity: 'error', summary: 'Service Error', detail: request.responseText, autoTimeout: 5000}]);
+                }                                  
+            });            
+                        
+        }
+        
+        self.removeWFO = function (event, data) {                         
             
-            var id = params.houseModel().get("id");
+            var id = self.wfoModel().id;
                 
             $.ajax({                    
                 type: "DELETE",
@@ -247,7 +285,7 @@ function (oj, ko, responsiveUtils, responsiveKnockoutUtils, ArrayDataProvider, C
                 contentType : "application/json",                    
                 success: function(id) {                                        
                     self.messages([{severity: 'info', summary: 'Succesful Action', detail: "WFO removed successfuly", autoTimeout: 5000}]);
-                    self.removeFromHouseList(id);                        
+                    self.removeFromWFOList(id);                        
                 },
                 error: function (request, status, error) {
                     self.messages([{severity: 'error', summary: 'Service Error', detail: request.responseText, autoTimeout: 5000}]);

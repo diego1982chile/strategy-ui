@@ -85,8 +85,13 @@ define(['knockout',
                     
                 console.log(self.WFOList().get(self.selectedWFO()));
                 
-                if(self.selectedWFO() && self.selectedWFO() !== -1) {                                        
-                    name = self.WFOList().get(self.selectedWFO()).get("name");
+                if(self.selectedWFO() && self.selectedWFO() !== -1) {     
+                    try {
+                        name = self.WFOList().get(self.selectedWFO()).get("name");
+                    }                    
+                    catch(ex) {
+                        console.log(ex);
+                    }
                 }
                 
                 self.tabData.push({

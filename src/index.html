@@ -97,17 +97,21 @@
               <h1 class="oj-sm-only-hide oj-web-applayout-header-title" title="Application Name"><oj-bind-text value="[[appName]]"></oj-bind-text></h1>
             </div>
             <div class="oj-flex-bar-end">
-              <!-- Responsive Toolbar -->
+               <!-- Responsive Toolbar -->
               <oj-toolbar>
                 <oj-menu-button id="userMenu" display="[[smScreen() ? 'icons' : 'all']]" chroming="borderless">
-                  <span><oj-bind-text value="[[userLogin]]"></oj-bind-text></span>
-                  <span slot="endIcon" :class="[[{'oj-icon demo-appheader-avatar': smScreen(), 'oj-component-icon oj-button-menu-dropdown-icon': !smScreen()}]]"></span>
-                  <oj-menu id="menu1" slot="menu">
-                    <oj-option id="pref" value="pref">Preferences</oj-option>
-                    <oj-option id="help" value="help">Help</oj-option>
-                    <oj-option id="about" value="about">About</oj-option>
-                    <oj-option id="out" value="out">Sign Out</oj-option>
-                  </oj-menu>
+                    <span><oj-bind-text value="[[userLogin]]"></oj-bind-text></span>
+                    <span slot="endIcon" :class="[[{'oj-icon demo-appheader-avatar': smScreen(), 'oj-component-icon oj-button-menu-dropdown-icon': !smScreen()}]]"></span>
+                        <oj-menu id="menu1" slot="menu" on-oj-action="[[menuItemAction]]">
+                            <oj-bind-if test="[[userLoggedIn()=='Y']]">
+                                <oj-option id="pref" value="pref">
+                                    <span data-bind="text: 'Preferences'"></span>
+                                </oj-option>                            
+                                <oj-option id="out" value="out">
+                                    <span data-bind="text: 'Sign Out'"></span>
+                                </oj-option>                                
+                            </oj-bind-if>
+                        </oj-menu>                    
                 </oj-menu-button>
               </oj-toolbar>
             </div>
@@ -122,6 +126,24 @@
           </div>
         </header>
         <oj-module role="main" class="oj-web-applayout-max-width oj-web-applayout-content" config="[[moduleAdapter.koObservableConfig]]">
+            
+            <!-- Messages -->
+            <oj-messages messages="[[messagesDataprovider]]" position="{}" display="notification">
+            </oj-messages>                    
+            
+            <oj-dialog id="dialogPreferences" dialog-title="Preferences" cancel-behavior="icon">                            
+                <div slot="body">                    
+                    <div class="oj-panel">                        
+                        <p>
+                          Reset all DB values. Please notice this action is not reversible.
+                        </p>
+                        <oj-button id="width_full_button" class="oj-sm-width-full" chroming="callToAction" on-oj-action="[[reset]]">
+                          Reset
+                        </oj-button>
+                    </div>                                                   
+                </div>       
+            </oj-dialog>  
+            
         </oj-module>
         <footer class="oj-web-applayout-footer" role="contentinfo">
           <div class="oj-web-applayout-footer-item oj-web-applayout-max-width">

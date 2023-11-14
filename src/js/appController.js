@@ -117,7 +117,7 @@ define(['knockout', 'ojs/ojcontext', 'ojs/ojmodule-element-utils', 'ojs/ojknocko
     this.messagesDataprovider = new ArrayDataProvider(this.messages);
           
 
-    this.authorize = (token) => { 
+    this.authorize = (token) => {        
         
         let jwtData = token.split('.')[1]
         let decodedJwtJsonData = window.atob(jwtData)
@@ -158,7 +158,7 @@ define(['knockout', 'ojs/ojcontext', 'ojs/ojmodule-element-utils', 'ojs/ojknocko
 
     }    
       
-    $(function() {        
+    $(function() {      
         $(document).ajaxError(function( event, request, settings ) {                
             
             var rootViewModel = ko.dataFor(document.getElementById('globalBody'));  
